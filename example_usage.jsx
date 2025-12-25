@@ -9,7 +9,7 @@ const App = () => {
     const features = [
         {
             type: 'line',
-            title: 'Hydrophobicity',
+            title: '疏水性',
             height: 80,
             data: {
                 values: [
@@ -30,12 +30,12 @@ const App = () => {
             yAxis: {
                 visible: true,
                 range: [-3, 3], // 自定义范围
-                color: '#2563EB' // 自定义轴颜色 (Blue 600)
+                color: '#000000' // 自定义轴颜色 (Blue 600)
             }
         },
         {
             type: 'bar',
-            title: 'Charge',
+            title: '电荷',
             height: 60,
             data: {
                 values: Array(92).fill(0).map(() => Math.floor(Math.random() * 5) - 2), // -2 to 2
@@ -50,7 +50,7 @@ const App = () => {
         },
         {
             type: 'position',
-            title: 'Secondary Structure',
+            title: '二级结构',
             height: 40,
             backgroundColor: '#FFFFFF', // 琥珀色背景
             backgroundOpacity: 1,    // 5% 透明度
@@ -75,12 +75,16 @@ const App = () => {
                 
                 {/* 渲染组件 */}
                 <PeptideVisualizer 
-                    sequence={sequence}
+                    sequence={{
+                        sequence: sequence,
+                        title: '序列',
+                    }}
                     features={features}
                     options={{
                         defaultChartHeight: 60,
-                        titleWidth: 120,
-                        minPixelPerResidue: 10 // 设置每个残基的最小宽度，序列较长时会出现横向滚动
+                        titleWidth: 50,
+                        minPixelPerResidue: 10, // 设置每个残基的最小宽度，序列较长时会出现横向滚动
+                        showHeader: false,
                     }}
                 />
                 
