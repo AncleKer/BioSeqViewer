@@ -16,7 +16,7 @@ class SVGVisualizerEngine {
         this.options = {
             margin: options.margin || {
                 top: 0, // Reduced from 40 to 20
-                right: 80,
+                right: 0,
                 bottom: 0,
                 left: 100
             },
@@ -132,7 +132,10 @@ class SVGVisualizerEngine {
 
         // 2. 计算宽度
         // 获取容器当前的实际宽度
-        const { width: containerWidth } = this.container.getBoundingClientRect();
+        let containerWidth = this.container.getBoundingClientRect().width;
+        if (!containerWidth) {
+            containerWidth = this.container.clientWidth;
+        }
         
         // 计算基于序列长度的最小内容宽度
         const minContentWidth = sequenceLength * this.options.minPixelPerResidue + this.options.titleWidth + this.options.margin.right;
@@ -145,7 +148,16 @@ class SVGVisualizerEngine {
 
         // 设置容器样式以支持横向滚动
         // this.container.style.overflowX = 'auto'; // Removed: Let parent handle scrolling
-        this.svg.style.minWidth = `${effectiveWidth}px`; // 确保SVG至少有这么宽
+        
+        // 如果实际宽度等于容器宽度（即没有横向滚动），强制SVG宽度为100%以确保填满
+        // 否则设置为具体像素值以撑开容器
+        if (Math.abs(effectiveWidth - containerWidth) < 1) {
+            this.svg.style.width = '100%';
+            this.svg.style.minWidth = '100%';
+        } else {
+            this.svg.style.width = `${effectiveWidth}px`;
+            this.svg.style.minWidth = `${effectiveWidth}px`;
+        }
 
         const labelHeight = 30;
         const xAxisYOffset = currentYOffset;
