@@ -12,19 +12,39 @@ BioSeqViewer 是一个基于 React 和 SVG 的生物序列可视化组件。它�
 
 ## 安装
 
-确保你的项目中已经安装了 React。
+你可以通过以下两种方式将此组件集成到你的项目中：
+
+### 方法 1: 通过 Git 安装 (推荐)
+
+在你的项目根目录下运行：
 
 ```bash
-npm install
+# 替换为你的仓库地址
+npm install git+https://gitee.com/AncleKer/BioSeqViewer.git
 # 或
-yarn install
+yarn add git+https://gitee.com/AncleKer/BioSeqViewer.git
 ```
+
+### 方法 2: 手动复制
+
+将以下文件和文件夹复制到你的项目组件目录中（例如 `src/components/BioSeqViewer`）：
+
+- `PeptideVisualizerReact.jsx`
+- `renderers/` 文件夹
+- `components/` 文件夹
+- `utils/` 文件夹
+- `index.js` (可选)
+
+确保你的项目安装了必要的依赖 (`react`, `react-dom`)。
 
 ## 快速开始
 
 ```jsx
 import React from 'react';
-import PeptideVisualizer from './PeptideVisualizerReact';
+// 如果是通过 npm 安装
+import { PeptideVisualizer } from 'bioseqviewer';
+// 如果是手动复制
+// import PeptideVisualizer from './components/BioSeqViewer/PeptideVisualizerReact';
 
 const MyComponent = () => {
   const sequence = "MKTIIALSYIFCLVFADYKDDDDK";
