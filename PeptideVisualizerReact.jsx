@@ -322,6 +322,11 @@ const PeptideVisualizer = ({ sequence, features = [], options = {}, className = 
             className={`peptide-viz-wrapper ${className}`} 
             style={{ 
                 position: 'relative', // Ensure relative positioning for contained absolute elements if any
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                padding: 0,
+                margin: 0,
                 ...style 
             }}
         >
