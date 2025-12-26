@@ -27,21 +27,35 @@ const App = () => {
                 visible: true,
                 range: [-3, 3], // 自定义范围
                 color: '#000000' // 自定义轴颜色 (Blue 600)
+            },
+            xAxis: {
+                visible: true,
+                color: 'red',
+                width: 0.5, // 可以设置更细的线，例如 0.5
             }
         },
         {
             type: 'bar',
             title: '电荷',
             height: 60,
+            config: {
+                positiveColor: '#10B981', // Emerald 500 (自定义正值颜色)
+                negativeColor: '#F43F5E', // Rose 500 (自定义负值颜色)
+                shape: 'rect',            // 'rect' | 'rounded' | 'circle' | 'triangle' | 'star' | 'diamond' | any char
+                filled: true,             // 是否填充形状
+                barWidthRatio: 0.8        // 0.1 - 1.0 (自定义柱子宽度比例)
+            },
             data: {
                 values: Array(50).fill(0).map(() => Math.floor(Math.random() * 5) - 2), // -2 to 2
-                positiveColor: '#F59E0B',
-                negativeColor: '#EF4444'
             },
             backgroundColor: '#FEF3C7', // Amber 50
             backgroundOpacity: 0.3,
             yAxis: {
                 visible: false // 隐藏Y轴
+            },
+            xAxis: {
+                visible: true,
+                width: 1,
             }
         },
         {
@@ -58,6 +72,9 @@ const App = () => {
                     { type: 'sheet', start: 38, end: 44 },
                     { type: 'loop', start: 44, end: 50 }
                 ]
+            },
+            xAxis: {
+                visible: true,
             }
         }
     ];

@@ -148,9 +148,20 @@ export class BaseRenderer {
 
     /**
      * Helper to render Y-Axis
+     * Handles visibility check internally based on feature config
+     * @param {object} defaultStyle - Default style overrides (e.g. width, dashArray)
      */
-    renderYAxis(yOffset, height, min, max, color = null) {
-        const axisColor = color || this.options.colors.axis;
+    renderYAxis(yOffset, height, min, max, defaultStyle = {}) {
+        // Visibility check
+        const config = this.feature.yAxis || {};
+        if (config.visible === false) return;
+
+        // 1. Color Priority: config > defaultStyle > global theme
+        const axisColor = config.color || defaultStyle.color || this.options.colors.axis;
+        
+        // 2. Width Priority: config > defaultStyle > default (1)
+        const strokeWidth = config.width !== undefined ? config.width : (defaultStyle.width !== undefined ? defaultStyle.width : 1);
+
         const x = this.options.titleWidth; // Y-axis sits at the boundary of title and chart
 
         // Axis Line
@@ -160,7 +171,7 @@ export class BaseRenderer {
         axis.setAttribute('x2', x);
         axis.setAttribute('y2', yOffset + height);
         axis.setAttribute('stroke', axisColor);
-        axis.setAttribute('stroke-width', 1);
+        axis.setAttribute('stroke-width', strokeWidth);
         this.engine.svg.appendChild(axis);
 
         // Ticks: min, mid, max
@@ -177,6 +188,7 @@ export class BaseRenderer {
             tickLine.setAttribute('x2', x - 4);
             tickLine.setAttribute('y2', tick.y);
             tickLine.setAttribute('stroke', axisColor);
+            tickLine.setAttribute('stroke-width', strokeWidth); // Ticks inherit axis width
             this.engine.svg.appendChild(tickLine);
 
             const label = this.engine._createText(x - 6, tick.y, tick.val.toFixed(1).replace(/\.0$/, ''), {
@@ -186,5 +198,60 @@ export class BaseRenderer {
             });
             this.engine.svg.appendChild(label);
         });
+    }
+
+    /**
+     * Renders a horizontal reference line (X-Axis) at a specific data value
+     * @param {object} defaultStyle - Default style overrides (e.g. for position chart wanting solid line)
+     */
+    renderXAxisLine(yOffset, width, height, min, max, defaultStyle = {}) {
+        const config = this.feature.xAxis || {};
+        
+        // Allow disabling via config
+        if (config.visible === false) return;
+
+        // Default yValue is 0
+        const yValue = config.value !== undefined ? config.value : (config.yValue !== undefined ? config.yValue : 0);
+
+        // Check if line is within visible range
+        if (yValue < min || yValue > max) return;
+
+        const margin = { left: this.options.titleWidth + 5 };
+        const range = max - min;
+        
+        if (range === 0) return;
+
+        // Calculate pixel Y position
+        // y = yOffset + height - (normalized_value * height)
+        const pixelY = yOffset + height - ((yValue - min) / range) * height;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', margin.left);
+        line.setAttribute('y1', pixelY);
+        line.setAttribute('x2', margin.left + width);
+        line.setAttribute('y2', pixelY);
+        
+        // Style attributes
+        const color = config.color || defaultStyle.color || this.options.colors.axis;
+        const strokeWidth = config.width !== undefined ? config.width : (defaultStyle.width !== undefined ? defaultStyle.width : 1);
+        
+        // DashArray logic: config > defaultStyle > default '' (solid)
+        // Default is now solid line ('') per user request
+        let dashArray = '';
+ 
+        if (config.dashArray !== undefined) {
+            dashArray = config.dashArray;
+        } else if (defaultStyle.dashArray !== undefined) {
+            dashArray = defaultStyle.dashArray;
+        }
+
+        line.setAttribute('stroke', color);
+        line.setAttribute('stroke-width', strokeWidth);
+        if (dashArray && dashArray !== 'none') {
+            line.setAttribute('stroke-dasharray', dashArray);
+        }
+
+        // Add to SVG (background layer preference would be ideal but append works)
+        this.engine.svg.appendChild(line);
     }
 }

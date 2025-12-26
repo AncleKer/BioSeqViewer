@@ -21,16 +21,10 @@ export class LineChartRenderer extends BaseRenderer {
         }
         const range = max - min;
 
-        // 绘制Y轴 (除非显式禁用)
-        if (this.feature.yAxis?.visible !== false) {
-             this.renderYAxis(
-                yOffset, 
-                height, 
-                min, 
-                max,
-                this.feature.yAxis?.color // 自定义Y轴颜色
-            );
-        }
+        // 绘制Y轴 (BaseRenderer 处理 visible 检查)
+        this.renderYAxis(yOffset, height, min, max);
+        // Draw Reference Line (X-Axis)
+        this.renderXAxisLine(yOffset, width, height, min, max);
 
         const xScale = width / sequenceLength;
         

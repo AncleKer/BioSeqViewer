@@ -138,6 +138,15 @@ const options = {
     fontSize: 13,
     fontWeight: '500',
     color: '#333'
+  },
+
+  // 底部共享 X 轴配置
+  xAxis: {
+    visible: true,      // 是否显示底部 X 轴
+    interval: 5,        // 刻度间隔
+    tickSize: 6,        // 刻度线长度
+    labelSize: 12,      // 标签字体大小
+    width: 2            // 轴线宽度 (支持小数，例如 0.5)
   }
 };
 ```
@@ -154,7 +163,8 @@ const options = {
 | `height` | number | 图表高度 (默认使用 options.defaultChartHeight) |
 | `backgroundColor` | string | 背景网格带颜色 |
 | `backgroundOpacity` | number | 背景透明度 |
-| `yAxis.visible` | boolean | 是否显示 Y 轴 (适用于 line/bar) |
+| `yAxis` | object | Y 轴配置 `{ visible, range: [min,max], color, width }` |
+| `xAxis` | object | 行内 X 轴/参考线配置 `{ visible, value, color, width, dashArray }` |
 | `titleStyle` | object | 覆盖全局的标题样式 `{ fontSize, color, ... }` |
 
 ### 1. Sequence (序列展示)
@@ -193,11 +203,21 @@ const options = {
 ```javascript
 {
   type: 'bar',
-  title: 'Conservation',
+  title: 'Charge',
   data: {
-    values: [10, 5, 8, ...]
+    values: [10, -5, 8, -2, ...]
   },
-  color: '#059669' // 柱子颜色
+  // 高级样式配置
+  config: {
+    positiveColor: '#10B981', // 正值颜色
+    negativeColor: '#F43F5E', // 负值颜色
+    // 形状支持: 'rect' (默认), 'circle', 'triangle', 'star', 'diamond', 或任意字符
+    shape: 'rect',            
+    filled: true,             // 是否填充形状 (仅对几何形状有效)
+    barWidthRatio: 0.8        // 柱子宽度占槽位的比例 (0.1 - 1.0)
+  },
+  // 也可以仅使用 color 属性设置统一颜色
+  // color: '#059669' 
 }
 ```
 

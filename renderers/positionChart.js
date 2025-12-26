@@ -5,15 +5,10 @@ export class PositionRenderer extends BaseRenderer {
         if (!this.feature.data?.positions) return;
         const margin = { left: this.engine.options.titleWidth + 5 };
         
-        // Background line
-        const bgLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        bgLine.setAttribute('x1', margin.left);
-        bgLine.setAttribute('y1', yOffset + height / 2);
-        bgLine.setAttribute('x2', margin.left + width);
-        bgLine.setAttribute('y2', yOffset + height / 2);
-        bgLine.setAttribute('stroke', this.engine.options.colors.axis);
-        bgLine.setAttribute('stroke-width', 2);
-        this.engine.svg.appendChild(bgLine);
+        // Background line (Backbone) - Using BaseRenderer's generic method
+        // Range -1 to 1, with value 0 being the center.
+        // Default style: Solid line, width 1 (BaseRenderer defaults)
+        this.renderXAxisLine(yOffset, width, height, -1, 1);
     
         const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         

@@ -16,7 +16,7 @@ class SVGVisualizerEngine {
         this.options = {
             margin: options.margin || {
                 top: 0, // Reduced from 40 to 20
-                right: 0,
+                right: 5,
                 bottom: 0,
                 left: 100
             },
@@ -30,6 +30,13 @@ class SVGVisualizerEngine {
             titleWidth: options.titleWidth || 100,
             chartSpacing: options.chartSpacing || 24,
             minPixelPerResidue: options.minPixelPerResidue || 20, // 每个残基的最小像素宽度
+            xAxis: {
+                visible: options.xAxis?.visible !== false, // Default true
+                interval: options.xAxis?.interval || 5,
+                tickSize: options.xAxis?.tickSize || 6,
+                labelSize: options.xAxis?.labelSize || 12,
+                width: options.xAxis?.width || 2, // Default width 2
+            }
         };
         this.rawOptions = options; // 保存原始配置以便 render 时使用
 
@@ -159,7 +166,7 @@ class SVGVisualizerEngine {
             this.svg.style.minWidth = `${effectiveWidth}px`;
         }
 
-        const labelHeight = 30;
+        const labelHeight = this.options.xAxis.visible ? 30 : 0;
         const xAxisYOffset = currentYOffset;
         
         const totalHeight = xAxisYOffset + labelHeight + this.options.margin.bottom;
@@ -189,7 +196,9 @@ class SVGVisualizerEngine {
             }
         });
 
-        this._renderSharedXAxis(chartWidth, xAxisYOffset, sequenceLength);
+        if (this.options.xAxis.visible) {
+            this._renderSharedXAxis(chartWidth, xAxisYOffset, sequenceLength);
+        }
     }
 
     _createText(x, y, content, { anchor = 'start', size = 14, color = null, weight = 'normal', fontFamily = null } = {}) {
@@ -214,6 +223,7 @@ class SVGVisualizerEngine {
     _renderSharedXAxis(width, yOffset, sequenceLength) {
         const margin = { left: this.options.titleWidth + 5 };
         const xScale = width / sequenceLength;
+        const interval = this.options.xAxis.interval;
 
         // 主轴线
         const axis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -222,24 +232,25 @@ class SVGVisualizerEngine {
         axis.setAttribute('x2', margin.left + width);
         axis.setAttribute('y2', yOffset);
         axis.setAttribute('stroke', this.options.colors.axis);
-        axis.setAttribute('stroke-width', 2);
+        axis.setAttribute('stroke-width', this.options.xAxis.width);
         this.svg.appendChild(axis);
 
         // 刻度
-        for (let i = 5; i <= sequenceLength; i += 5) {
+        for (let i = interval; i <= sequenceLength; i += interval) {
             const x = margin.left + (i - 1) * xScale + xScale / 2;
             
             const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             tick.setAttribute('x1', x);
             tick.setAttribute('y1', yOffset);
             tick.setAttribute('x2', x);
-            tick.setAttribute('y2', yOffset + 6);
+            tick.setAttribute('y2', yOffset + this.options.xAxis.tickSize);
             tick.setAttribute('stroke', this.options.colors.axis);
+            tick.setAttribute('stroke-width', this.options.xAxis.width); // Ticks inherit axis width
             this.svg.appendChild(tick);
 
             const label = this._createText(x, yOffset + 20, i.toString(), {
                 anchor: 'middle',
-                size: 12,
+                size: this.options.xAxis.labelSize,
                 color: this.options.colors.axis
             });
             this.svg.appendChild(label);
