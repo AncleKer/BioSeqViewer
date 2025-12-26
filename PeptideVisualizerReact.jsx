@@ -321,21 +321,20 @@ const PeptideVisualizer = ({ sequence, features = [], options = {}, className = 
         <div 
             className={`peptide-viz-wrapper ${className}`} 
             style={{ 
-                fontFamily: '"Inter", sans-serif',
                 position: 'relative', // Ensure relative positioning for contained absolute elements if any
                 ...style 
             }}
         >
             {showHeader && (
-                <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="peptide-viz-header" style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {showHeaderTitle ? (
-                        <h3 style={{ margin: 0, fontSize: '18px', color: '#111827', fontWeight: 600 }}>
+                        <h3 className="peptide-viz-title" style={{ margin: 0 }}>
                             Peptide Analysis
                         </h3>
                     ) : <div></div>}
                     
                     {showLegend && (
-                        <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: '#6B7280' }}>
+                        <div className="peptide-viz-legend" style={{ display: 'flex', gap: '12px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10B981' }}></span> Helix
                             </div>
