@@ -131,12 +131,15 @@ class SVGVisualizerEngine {
         sequenceLength = sequenceLength || 30;
 
         // 2. 计算宽度
-        // const { width } = this.container.getBoundingClientRect(); // Removed: Don't limit by container width
+        // 获取容器当前的实际宽度
+        const { width: containerWidth } = this.container.getBoundingClientRect();
+        
         // 计算基于序列长度的最小内容宽度
         const minContentWidth = sequenceLength * this.options.minPixelPerResidue + this.options.titleWidth + this.options.margin.right;
         
         // 如果容器宽度大于最小内容宽度，则占满容器；否则使用最小内容宽度（这将触发横向滚动）
-        const effectiveWidth = Math.max(800, minContentWidth); // Use fixed min width or just content width
+        // 优先使用父容器宽度，如果内容实在放不下（由 minPixelPerResidue 决定），则使用计算出的最小内容宽度
+        const effectiveWidth = Math.max(containerWidth || 0, minContentWidth);
         
         const chartWidth = effectiveWidth - this.options.titleWidth - this.options.margin.right;
 
