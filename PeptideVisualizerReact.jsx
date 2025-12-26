@@ -15,9 +15,9 @@ class SVGVisualizerEngine {
         this.container = container;
         this.options = {
             margin: options.margin || {
-                top: 40,
+                top: 0, // Reduced from 40 to 20
                 right: 80,
-                bottom: 40,
+                bottom: 0,
                 left: 100
             },
             colors: {
@@ -131,17 +131,17 @@ class SVGVisualizerEngine {
         sequenceLength = sequenceLength || 30;
 
         // 2. 计算宽度
-        const { width } = this.container.getBoundingClientRect();
+        // const { width } = this.container.getBoundingClientRect(); // Removed: Don't limit by container width
         // 计算基于序列长度的最小内容宽度
         const minContentWidth = sequenceLength * this.options.minPixelPerResidue + this.options.titleWidth + this.options.margin.right;
         
         // 如果容器宽度大于最小内容宽度，则占满容器；否则使用最小内容宽度（这将触发横向滚动）
-        const effectiveWidth = Math.max(width || 800, minContentWidth);
+        const effectiveWidth = Math.max(800, minContentWidth); // Use fixed min width or just content width
         
         const chartWidth = effectiveWidth - this.options.titleWidth - this.options.margin.right;
 
         // 设置容器样式以支持横向滚动
-        this.container.style.overflowX = 'auto';
+        // this.container.style.overflowX = 'auto'; // Removed: Let parent handle scrolling
         this.svg.style.minWidth = `${effectiveWidth}px`; // 确保SVG至少有这么宽
 
         const labelHeight = 30;
@@ -322,11 +322,7 @@ const PeptideVisualizer = ({ sequence, features = [], options = {}, className = 
             className={`peptide-viz-wrapper ${className}`} 
             style={{ 
                 fontFamily: '"Inter", sans-serif',
-                background: '#fff',
-                borderRadius: '12px',
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-                padding: '24px',
-                border: '1px solid #F3F4F6',
+                position: 'relative', // Ensure relative positioning for contained absolute elements if any
                 ...style 
             }}
         >

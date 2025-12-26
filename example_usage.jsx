@@ -74,19 +74,28 @@ const App = () => {
                 <h1 style={{ color: '#111827', marginBottom: '24px' }}>Protein Analysis Dashboard</h1>
                 
                 {/* 渲染组件 */}
-                <PeptideVisualizer 
-                    sequence={{
-                        sequence: sequence,
-                        title: '序列',
-                    }}
-                    features={features}
-                    options={{
-                        defaultChartHeight: 60,
-                        titleWidth: 50,
-                        minPixelPerResidue: 10, // 设置每个残基的最小宽度，序列较长时会出现横向滚动
-                        showHeader: false,
-                    }}
-                />
+                <div style={{ 
+                width: '800px', 
+                height: '400px', 
+                border: '1px solid #ccc',
+                padding: '20px',
+                overflow: 'auto', // 允许内容溢出时显示滚动条
+                margin: '0 auto' // 居中显示
+            }}>
+                    <PeptideVisualizer 
+                        sequence={{
+                            sequence: sequence,
+                            title: '序列',
+                        }}
+                        features={features}
+                        options={{
+                            defaultChartHeight: 60,
+                            titleWidth: 70,
+                            minPixelPerResidue: 10, // 设置每个残基的最小宽度，序列较长时会出现横向滚动
+                            showHeader: false,
+                        }}
+                    />
+                </div>
                 
                 <div style={{ marginTop: '24px', padding: '16px', background: 'white', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
                     <h4 style={{ margin: '0 0 8px 0' }}>About this sequence</h4>
